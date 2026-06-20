@@ -422,10 +422,10 @@ Market.Compilar = function(sourceCode)
         protectedSource = string.gsub(protectedSource, placeholder, originalString)
     end
     
-    local deploymentHeader = [[
+   local deploymentHeader = [[
         local Ambiente, Metatabelas, Funcoes, SistemaArquivos, Scripts, Depuracao, Propriedades, Desenho, Rede, Interacao, Tabela, Texto, Matematica, Tarefas, Rotinas, DadosBrutos, Binarios, Sistema, TextoUltra, EstruturasRoblox, Utilitarios = 
             Market.Environment, Market.Metatables, Market.Closures, Market.Filesystem, 
-            Market.Scripts, Market.Debug, Market.Properties, Market.Drawing, 
+            Market.Scripts, Market.Debug, Market.Properties, Market.Desenho, -- CORRIGIDO: Mudado de Market.Drawing para Market.Desenho
             Market.Network, Market.Interactivity, Market.Tabela, Market.Texto, 
             Market.Matematica, Market.Tarefas, Market.Rotinas, Market.DadosBrutos, 
             Market.Binarios, Market.Sistema, Market.TextoUltra, Market.EstruturasRoblox, 
