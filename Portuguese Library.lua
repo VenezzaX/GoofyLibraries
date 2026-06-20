@@ -1,3 +1,4 @@
+-- [[ BIBLIOTECA ULTRA OMNI COM COMPILADOR GRAMATICAL PT-BR (v12.0) ]] --
 local Market = {
     Environment = {
         obter_ambiente_global   = getgenv,
@@ -262,7 +263,7 @@ local Market = {
         DimensaoU2       = UDim2,
         DimensaoU        = UDim,
         Regiao3          = Region3,
-        Eixos            = Axes,
+        EAxes            = Axes,
         Faces            = Faces,
         DataHora         = DateTime,
         SequenciaCores   = ColorSequence,
@@ -292,7 +293,9 @@ local Market = {
         info_coletor     = gcinfo
     },
 
+    -- ⛏️ DICIONÁRIO ESTRUTURAL DEFINITIVO EXTRA EXPANDIDO v12
     Grammar = {
+        -- Palavras-Chave estruturais nativas Lua
         ["Criar"]         = "local",
         ["Funcao"]        = "function",
         ["Retornar"]      = "return",
@@ -315,22 +318,45 @@ local Market = {
         ["Indices"]       = "ipairs",
         ["recebe"]        = "=",
 
+        -- Variáveis locais, tabelas e estruturas customizadas
+        ["Config"]        = "config",
+        ["Estado"]        = "state",
+        ["Opcoes"]        = "options",
 
+        -- APIs de Serviços, Câmera e Gerenciamento de Jogadores
         ["Servicos"]          = "game:GetService",
         ["Entrada"]           = "game:GetService('UserInputService')",
         ["ListaDeLista"]      = "game:GetService('RunService')",
+        ["JogadorLocal"]      = "LocalPlayer",
+        ["Personagem"]        = "Character",
+        ["PersonagemAdicionado"] = "CharacterAdded",
+        ["CameraAtual"]       = "CurrentCamera",
+        ["MouseDoJogador"]    = "GetMouse",
+
+        -- Sinais e Eventos de Input
+        ["TeclaPressionada"]  = "IsKeyDown",
+        ["EntradaIniciada"]   = "InputBegan",
+        ["EntradaTerminada"]  = "InputEnded",
+        ["DadoEntrada"]       = "Input",
+        ["ObjetoEntrada"]     = "input",
+        ["CodigoTecla"]       = "KeyCode",
+        ["TipoEntrada"]       = "UserInputType",
+        
+        -- Eventos Globais de Ciclo da Engine
         ["PassoRenderizacao"]  = "RenderStepped",
         ["Conectar"]          = "Connect",
         ["Desconectar"]       = "Disconnect",
         ["Enums"]             = "Enum",
-        
 
-        ["EntradaIniciada"]   = "InputBegan",
-        ["EntradaTerminada"]  = "InputEnded",
-        ["CodigoTecla"]       = "KeyCode",
-        ["TipoEntrada"]       = "UserInputType",
+        -- Elementos da API de Física e Humanoides do Roblox
+        ["Humanoide"]         = "Humanoid",
+        ["ParteRaiz"]         = "HumanoidRootPart",
+        ["AncoragemPlataforma"] = "PlatformStand",
+        ["DirecaoOlhar"]      = "LookVector",
+        ["DirecaoDireita"]    = "RightVector",
+        ["DirecaoCima"]       = "UpVector",
 
-
+        -- Métodos Avançados de Instância
         ["EncontrarFilho"]       = "FindFirstChild",
         ["EncontrarFilhoClasse"]  = "FindFirstChildOfClass",
         ["E_DescendenteDe"]      = "IsDescendantOf",
@@ -340,7 +366,7 @@ local Market = {
         ["ObterDescendentes"]    = "GetDescendants",
         ["Clonar"]               = "Clone",
 
-
+        -- Propriedades Físicas e Elementos de Exibição Universais
         ["Posicao"]       = "Position",
         ["Tamanho"]       = "Size",
         ["TextoExibido"]  = "Text",
@@ -356,6 +382,7 @@ local Market = {
     }
 }
 
+-- Interceptador Estrito Contra Erros de Digitação
 local function AplicarMetatabelaEstrita(subTabela, nomeSecao)
     setmetatable(subTabela, {
         __index = function(_, chave)
@@ -370,10 +397,12 @@ for nome, secao in pairs(Market) do
     end
 end
 
+-- Motor de Compilação Gramatical Tradutor
 Market.Compilar = function(sourceCode)
     local literals = {}
     local litCount = 0
     
+    -- Isola as strings literais do código para proteger caminhos de texto internos
     local protectedSource = string.gsub(sourceCode, "([\"'])(.-)%1", function(quote, content)
         litCount = litCount + 1
         local placeholder = "___MARKET_LITERAL_" .. litCount .. "___"
@@ -383,10 +412,12 @@ Market.Compilar = function(sourceCode)
     
     protectedSource = string.gsub(protectedSource, "%-%-.-%\n", "\n")
     
+    -- Tradução via casamento de palavras lexicais estritas usando fronteiras de strings
     for customKeyword, luaKeyword in pairs(Market.Grammar) do
         protectedSource = string.gsub(protectedSource, "%f[%a_]"..customKeyword.."%f[%A]", luaKeyword)
     end
     
+    -- Restaura as strings protegidas originais
     for placeholder, originalString in pairs(literals) do
         protectedSource = string.gsub(protectedSource, placeholder, originalString)
     end
@@ -412,4 +443,4 @@ Market.Compilar = function(sourceCode)
 end
 
 getgenv().Market = Market
-print("🌌 PARSER GRAMATICAL PT-BR OMNIPRESENTE v11.0 ATIVADO!")
+print("🌌 COMPILADOR LEXICAL COMPLETO v12.0 INSTALADO NO SEU REPOSITÓRIO!")
