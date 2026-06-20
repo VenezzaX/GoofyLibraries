@@ -1,6 +1,5 @@
--- [[ BIBLIOTECA SUPREMA OMNI DE TRADUÇÃO DIRETA PARA PORTUGUÊS (v8.0) ]] --
-local Mercado = {
-    Ambiente = {
+local Market = {
+    Environment = {
         obter_ambiente_global   = getgenv,
         obter_ambiente_roblox   = getrenv,
         obter_ambiente_script   = getsenv,
@@ -190,7 +189,6 @@ local Mercado = {
         atrasar          = task.delay,
         esperar          = task.wait,
         cancelar         = task.cancel,
-        -- 🌀 ADICIONADO: CONTROLE PARALELO DE THREADS (PARALLEL LUAU)
         desincronizar    = task.desynchronize,
         sincronizar      = task.synchronize
     },
@@ -292,54 +290,126 @@ local Mercado = {
         afirmar          = assert,
         coletar_lixo     = collectgarbage,
         info_coletor     = gcinfo
+    },
+
+    Grammar = {
+        ["Criar"]         = "local",
+        ["Funcao"]        = "function",
+        ["Retornar"]      = "return",
+        ["Fim"]           = "end",
+        ["Se"]            = "if",
+        ["Entao"]         = "then",
+        ["SenaoSe"]       = "elseif",
+        ["Senao"]         = "else",
+        ["Enquanto"]      = "while",
+        ["Para"]          = "for",
+        ["Fazer"]         = "do",
+        ["Em"]            = "in",
+        ["Quebrar"]       = "break",
+        ["Nao"]           = "not",
+        ["E"]             = "and",
+        ["Ou"]            = "or",
+        ["Falso"]         = "false",
+        ["Verdadeiro"]    = "true",
+        ["Pares"]         = "pairs",
+        ["Indices"]       = "ipairs",
+        ["recebe"]        = "=",
+
+
+        ["Servicos"]          = "game:GetService",
+        ["Entrada"]           = "game:GetService('UserInputService')",
+        ["ListaDeLista"]      = "game:GetService('RunService')",
+        ["PassoRenderizacao"]  = "RenderStepped",
+        ["Conectar"]          = "Connect",
+        ["Desconectar"]       = "Disconnect",
+        ["Enums"]             = "Enum",
+        
+
+        ["EntradaIniciada"]   = "InputBegan",
+        ["EntradaTerminada"]  = "InputEnded",
+        ["CodigoTecla"]       = "KeyCode",
+        ["TipoEntrada"]       = "UserInputType",
+
+
+        ["EncontrarFilho"]       = "FindFirstChild",
+        ["EncontrarFilhoClasse"]  = "FindFirstChildOfClass",
+        ["E_DescendenteDe"]      = "IsDescendantOf",
+        ["Destruir"]             = "Destroy",
+        ["EsperarFilho"]         = "WaitForChild",
+        ["ObterFilhos"]          = "GetChildren",
+        ["ObterDescendentes"]    = "GetDescendants",
+        ["Clonar"]               = "Clone",
+
+
+        ["Posicao"]       = "Position",
+        ["Tamanho"]       = "Size",
+        ["TextoExibido"]  = "Text",
+        ["Cor"]           = "Color",
+        ["Contorno"]      = "Outline",
+        ["Visivel"]       = "Visible",
+        ["Nome"]          = "Name",
+        ["ForcaMaxima"]   = "MaxForce",
+        ["Pai"]           = "Parent",
+        ["Velocidade"]    = "Velocity",
+        ["Magnitude_3D"]  = "Magnitude",
+        ["VetorUnitario"] = "Unit"
     }
 }
 
--- Mapeamento de Erro Estrito Interceptador
 local function AplicarMetatabelaEstrita(subTabela, nomeSecao)
     setmetatable(subTabela, {
         __index = function(_, chave)
-            error(string.format("❌ Erro de Mapeamento: A propriedade ou função '%s' não existe na seção '%s'!", tostring(chave), nomeSecao), 2)
+            error(string.format("❌ Erro de Mapeamento: A função '%s' não existe na seção '%s'!", tostring(chave), nomeSecao), 2)
         end
     })
 end
 
-for nome, secao in pairs(Mercado) do
-    if type(secao) == "table" then
+for nome, secao in pairs(Market) do
+    if type(secao) == "table" and name ~= "Grammar" then
         AplicarMetatabelaEstrita(secao, nome)
     end
 end
 
-local function InicializarTraducao()
-    local env = getgenv()
-    env.Ambiente = Mercado.Ambiente
-    env.Metatabelas = Mercado.Metatabelas
-    env.Funcoes = Mercado.Funcoes
-    env.SistemaArquivos = Mercado.SistemaArquivos
-    env.Scripts = Mercado.Scripts
-    env.Depuracao = Mercado.Depuracao
-    env.Propriedades = Mercado.Propriedades
-    env.Desenho = Mercado.Desenho
-    env.Rede = Mercado.Rede
-    env.Interacao = Mercado.Interacao
-    env.Tabela = Mercado.Tabela
-    env.Texto = Mercado.Texto
-    env.Matematica = Mercado.Matematica
-    env.Tarefas = Mercado.Tarefas
-    env.Rotinas = Mercado.Rotinas
-    env.DadosBrutos = Mercado.DadosBrutos
-    env.Binarios = Mercado.Binarios
-    env.Sistema = Mercado.Sistema
-    env.TextoUltra = Mercado.TextoUltra
-    env.EstruturasRoblox = Mercado.EstruturasRoblox
-    env.Utilitarios = Mercado.Utilitarios
+Market.Compilar = function(sourceCode)
+    local literals = {}
+    local litCount = 0
     
-    -- Injeções globais fundamentais extras
-    env.definir_metatabela = setmetatable
-    env.obter_metatabela   = getmetatable
-    env.carregar_string    = loadstring
+    local protectedSource = string.gsub(sourceCode, "([\"'])(.-)%1", function(quote, content)
+        litCount = litCount + 1
+        local placeholder = "___MARKET_LITERAL_" .. litCount .. "___"
+        literals[placeholder] = quote .. content .. quote
+        return placeholder
+    end)
+    
+    protectedSource = string.gsub(protectedSource, "%-%-.-%\n", "\n")
+    
+    for customKeyword, luaKeyword in pairs(Market.Grammar) do
+        protectedSource = string.gsub(protectedSource, "%f[%a_]"..customKeyword.."%f[%A]", luaKeyword)
+    end
+    
+    for placeholder, originalString in pairs(literals) do
+        protectedSource = string.gsub(protectedSource, placeholder, originalString)
+    end
+    
+    local deploymentHeader = [[
+        local Ambiente, Metatabelas, Funcoes, SistemaArquivos, Scripts, Depuracao, Propriedades, Desenho, Rede, Interacao, Tabela, Texto, Matematica, Tarefas, Rotinas, DadosBrutos, Binarios, Sistema, TextoUltra, EstruturasRoblox, Utilitarios = 
+            Market.Environment, Market.Metatables, Market.Closures, Market.Filesystem, 
+            Market.Scripts, Market.Debug, Market.Properties, Market.Drawing, 
+            Market.Network, Market.Interactivity, Market.Tabela, Market.Texto, 
+            Market.Matematica, Market.Tarefas, Market.Rotinas, Market.DadosBrutos, 
+            Market.Binarios, Market.Sistema, Market.TextoUltra, Market.EstruturasRoblox, 
+            Market.Utilitarios
+    ]]
+    
+    local completeRuntimeString = deploymentHeader .. "\n" .. protectedSource
+    
+    local executableClosure, compileError = loadstring(completeRuntimeString)
+    if not executableClosure then
+        error("⚙️ Falha na Compilação do Script: " .. tostring(compileError), 2)
+    end
+    
+    return executableClosure
 end
 
-InicializarTraducao()
-getgenv().Mercado = Mercado
-print("🌌 VERSÃO OMNI SUPREMA 8.0 CARREGADA: Absolutamente todo o ecossistema foi coberto.")
+getgenv().Market = Market
+print("🌌 PARSER GRAMATICAL PT-BR OMNIPRESENTE v11.0 ATIVADO!")
